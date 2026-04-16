@@ -1,0 +1,5 @@
+# Phoenix Supply Chain Firewall — Agent Hub
+# Minimum trust surface: Frank + Alfonso only
+# Any third reviewer must be explicitly added by both.
+
+* @fcipollone @alfonso-eusebio

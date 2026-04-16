@@ -1,0 +1,22 @@
+{
+  "$schema": "https://openai.com/codex/hooks/v1",
+  "description": "Phoenix Supply Chain Firewall — Codex CLI hook configuration",
+  "instructions": "Place in ~/.codex/hooks.json to enable firewall checks on install commands.",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "event": "shell_command",
+        "match": "(npm install|npm add|pip install|yarn add|pnpm add|cargo add|gem install|uv pip install|poetry add)",
+        "handler": {
+          "type": "script",
+          "path": "../claude-code/pre-tool-use.sh",
+          "description": "Evaluates packages against Phoenix firewall before install. Reuses the same shell script as Claude Code — set PHOENIX_API_KEY and optionally PHOENIX_API_URL / PHOENIX_STRICT env vars."
+        },
+        "on_deny": {
+          "exit_code": 2,
+          "message": "Package blocked by Phoenix Supply Chain Firewall policy."
+        }
+      }
+    ]
+  }
+}
