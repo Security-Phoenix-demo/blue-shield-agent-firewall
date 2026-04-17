@@ -2,10 +2,10 @@
 
 > Protect AI coding agents from malicious and vulnerable packages. One command secures Claude Code, Cursor, Codex, Windsurf, Cline, and Aider.
 <p align="center">
-  <img src="/tools/firewall-agents/assets/phoenix-firewall-banner.jpeg" alt="Phoenix Supply Chain Agent Firewall banner" width="600">
+  <img src="assets/phoenix-firewall-banner.jpeg" alt="Phoenix Supply Chain Agent Firewall banner" width="600">
 </p>
 
-<h1 align="center">Phoenix Supply Chain AGENT Firewall</h1>
+<h1 align="center">Phoenix Supply Chain Agent Firewall</h1>
 
 <p align="center">
   <strong>Detection without enforcement is noise.</strong><br>
@@ -16,7 +16,7 @@
   <a href="https://github.com/Security-Phoenix-demo/phoenix-firewall/actions"><img src="https://img.shields.io/github/actions/workflow/status/Security-Phoenix-demo/phoenix-firewall/release.yml?label=build" alt="Build Status"></a>
   <a href="https://github.com/Security-Phoenix-demo/phoenix-firewall/releases"><img src="https://img.shields.io/github/v/release/Security-Phoenix-demo/phoenix-firewall" alt="Release"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-blue.svg" alt="License"></a>
-  <a href="https://cvedetails.io"><img src="https://img.shields.io/badge/powered%20by-Phoenix%20Security-orange" alt="Phoenix Security"></a>
+  <a href="https://phxintel.security.io"><img src="https://img.shields.io/badge/powered%20by-Phoenix%20Security-orange" alt="Phoenix Security"></a>
 </p>
 
 ## Quick Start
