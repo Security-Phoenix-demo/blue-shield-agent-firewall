@@ -13,10 +13,15 @@
 </p>
 
 <p align="center">
+  <img src="https://img.shields.io/badge/Agents%20Supported-Claude%20Code%20%7C%20Cursor%20%7C%20Codex%20%7C%20Windsurf%20%7C%20Cline%20%7C%20Aider-1f6feb" alt="Agents Supported">
+  <img src="https://img.shields.io/badge/Project%20Status-Released%20(Beta)-2da44e" alt="Project Status: Released Beta">
+</p>
+
+<p align="center">
   <a href="https://github.com/Security-Phoenix-demo/phoenix-firewall/actions"><img src="https://img.shields.io/github/actions/workflow/status/Security-Phoenix-demo/phoenix-firewall/release.yml?label=build" alt="Build Status"></a>
   <a href="https://github.com/Security-Phoenix-demo/phoenix-firewall/releases"><img src="https://img.shields.io/github/v/release/Security-Phoenix-demo/phoenix-firewall" alt="Release"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-blue.svg" alt="License"></a>
-  <a href="https://phxintel.security.io"><img src="https://img.shields.io/badge/powered%20by-Phoenix%20Security-orange" alt="Phoenix Security"></a>
+  <a href="https://phxintel.security"><img src="https://img.shields.io/badge/powered%20by-Phoenix%20Security-orange" alt="Phoenix Security"></a>
 </p>
 
 ## Quick Start
