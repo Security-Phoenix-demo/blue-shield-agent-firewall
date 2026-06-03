@@ -1,0 +1,13 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+*.tsbuildinfo
+
+# Generated at build time from hooks/lib/phoenix-firewall.sh (the canonical source)
+packages/cli/templates/
+
+# Logs / OS cruft
+*.log
+.DS_Store

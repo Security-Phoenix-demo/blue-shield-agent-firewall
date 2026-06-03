@@ -1,4 +1,5 @@
 import { Command } from 'commander';
+import { resolveApiUrl } from '../util/api-url.js';
 
 /**
  * `phoenix-firewall rules list` — fetch firewall rules attached to the
@@ -18,7 +19,9 @@ export function rulesCommand(): Command {
     .option('--offset <n>', 'Pagination offset', '0')
     .option('--json', 'Emit raw JSON instead of a table')
     .action(async (opts: { limit: string; offset: string; json?: boolean }) => {
-      const apiUrl = process.env.PHOENIX_API_URL || 'https://api.phxintel.security';
+      let apiUrl: string;
+      try { apiUrl = resolveApiUrl(process.env.PHOENIX_API_URL); }
+      catch (e) { console.error(`[phoenix-firewall] ${e instanceof Error ? e.message : e}`); process.exit(1); }
       const apiKey = process.env.PHOENIX_API_KEY;
       if (!apiKey) {
         console.error('[phoenix-firewall] PHOENIX_API_KEY not set');

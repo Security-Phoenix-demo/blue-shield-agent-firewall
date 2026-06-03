@@ -5,8 +5,12 @@
   "main": "dist/index.js",
   "bin": { "phoenix-firewall": "./dist/index.js" },
   "license": "Apache-2.0",
-  "files": ["dist"],
-  "scripts": { "build": "tsc", "prepublishOnly": "npm run build" },
+  "files": ["dist", "templates"],
+  "scripts": {
+    "copy-lib": "mkdir -p templates && cp ../../hooks/lib/phoenix-firewall.sh templates/phoenix-firewall.sh",
+    "build": "npm run copy-lib && tsc",
+    "prepublishOnly": "npm run build"
+  },
   "dependencies": { "commander": "^12.0.0", "yaml": "^2.4.0" },
   "devDependencies": { "typescript": "^5.4.0", "@types/node": "^20.0.0" }
 }

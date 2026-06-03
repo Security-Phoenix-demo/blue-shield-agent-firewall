@@ -14,7 +14,9 @@ const AGENTS = [
 const DEFAULT_CONFIG = {
   version: '1.0',
   api_key_env: 'PHOENIX_API_KEY',
-  settings: { fail_mode: 'open', strict_mode: false, cache_ttl_seconds: 300, ecosystems: ['npm', 'pypi'] },
+  // fail_mode 'closed': a blocking control must not wave installs through when
+  // it cannot verify them. Override per-environment with PHOENIX_FAIL_OPEN=true.
+  settings: { fail_mode: 'closed', strict_mode: false, cache_ttl_seconds: 300, ecosystems: ['npm', 'pypi'] },
   agents: {
     claude_code: { on_block: 'suggest_alternative', on_warn: 'show_context_and_ask', auto_upgrade: false },
     cursor: { on_block: 'abort', on_warn: 'show_context_and_ask' },
@@ -22,11 +24,15 @@ const DEFAULT_CONFIG = {
   },
 };
 
+// Pin the MCP server version. A supply-chain firewall should not bootstrap
+// itself from an unpinned `npx -y <pkg>@latest`. Bump this on release.
+const MCP_FIREWALL_VERSION = '^0.1.0';
+
 const MCP_CONFIG = {
   mcpServers: {
     'phoenix-firewall': {
       command: 'npx',
-      args: ['-y', '@phoenix-security/mcp-firewall'],
+      args: ['-y', `@phoenix-security/mcp-firewall@${MCP_FIREWALL_VERSION}`],
       env: { PHOENIX_API_KEY: '${PHOENIX_API_KEY}', PHOENIX_API_URL: 'https://api.phxintel.security' },
     },
   },

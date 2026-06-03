@@ -4,7 +4,12 @@ import { CallToolRequestSchema, ListToolsRequestSchema } from '@modelcontextprot
 import { PhoenixApiClient } from '../client/api.js';
 import { LRUCache } from '../cache/lru.js';
 
+const MAX_PURL_LENGTH = 1000;
+const MAX_DIFF_LENGTH = 1_000_000;
+const MAX_LOCKFILE_PACKAGES = 5000;
+
 function parsePurl(purl: string) {
+  if (typeof purl !== 'string' || purl.length === 0 || purl.length > MAX_PURL_LENGTH) return null;
   const m = purl.match(/^pkg:([^/]+)\/(.+?)(?:@(.+))?$/);
   return m ? { ecosystem: m[1], name: m[2], version: m[3] } : null;
 }
@@ -67,12 +72,18 @@ export function registerTools(server: Server, client: PhoenixApiClient, cache: L
         }
         case 'phoenix_check_lockfile': {
           const purls = (args as { packages: string[] }).packages;
-          const packages = purls.map(p => parsePurl(p)).filter(Boolean) as Array<{ ecosystem: string; name: string; version?: string }>;
+          if (!Array.isArray(purls)) return { content: [{ type: 'text', text: 'packages must be an array of purls.' }], isError: true };
+          const packages = purls.slice(0, MAX_LOCKFILE_PACKAGES).map(p => parsePurl(p)).filter(Boolean) as Array<{ ecosystem: string; name: string; version?: string }>;
+          if (purls.length > MAX_LOCKFILE_PACKAGES) {
+            console.error(`[phoenix-firewall] lockfile truncated to first ${MAX_LOCKFILE_PACKAGES} of ${purls.length} packages`);
+          }
           const result = await client.evaluate(packages.map(p => ({ ...p, version: p.version || 'latest' })));
           return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] };
         }
         case 'phoenix_check_diff': {
           const diff = (args as { diff: string }).diff;
+          if (typeof diff !== 'string') return { content: [{ type: 'text', text: 'diff must be a string.' }], isError: true };
+          if (diff.length > MAX_DIFF_LENGTH) return { content: [{ type: 'text', text: 'Diff too large to evaluate.' }], isError: true };
           const added = diff.match(/^\+\s*"([^"]+)":\s*"([^"]+)"/gm) || [];
           const packages = added.map(l => { const m = l.match(/"([^"]+)":\s*"([^"]+)"/); return m ? { ecosystem: 'npm', name: m[1], version: m[2] } : null; }).filter(Boolean) as Array<{ ecosystem: string; name: string; version: string }>;
           if (packages.length === 0) return { content: [{ type: 'text', text: 'No new dependencies detected in diff.' }] };

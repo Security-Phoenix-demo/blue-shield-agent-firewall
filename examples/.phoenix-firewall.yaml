@@ -11,12 +11,16 @@ version: "1.0"
 api_key_env: "PHOENIX_API_KEY"   # env var name (NEVER put the key here!)
 
 settings:
-  # Behavior when the Phoenix API is unreachable:
-  #   open   — allow all installs (default, least disruptive)
-  #   closed — block all installs until API is reachable
-  fail_mode: "open"
+  # Behavior when the Phoenix API cannot return a verdict (unreachable / non-2xx
+  # / unencodable input):
+  #   closed — block the install (default; a blocking control must fail safe)
+  #   open   — allow the install (least disruptive, but an attacker who degrades
+  #            the API can bypass the firewall — use only deliberately)
+  # Hooks honour the equivalent PHOENIX_FAIL_OPEN env var (default false=closed).
+  fail_mode: "closed"
 
-  # When true, non-2xx API responses also trigger a block (same as closed).
+  # When true, non-2xx API responses also trigger a block AND a missing API key
+  # blocks installs (equivalent to PHOENIX_STRICT=true).
   strict_mode: false
 
   # Local verdict cache TTL. Set to 0 to disable caching.

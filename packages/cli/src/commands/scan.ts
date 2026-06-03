@@ -1,12 +1,15 @@
 import { Command } from 'commander';
 import { readFileSync } from 'fs';
+import { resolveApiUrl } from '../util/api-url.js';
 
 export function scanCommand(): Command {
   return new Command('scan')
     .description('Scan a lockfile for supply chain risks')
     .argument('<lockfile>', 'Path to lockfile (package-lock.json, requirements.txt, etc.)')
     .action(async (lockfile: string) => {
-      const apiUrl = process.env.PHOENIX_API_URL || 'https://api.phxintel.security';
+      let apiUrl: string;
+      try { apiUrl = resolveApiUrl(process.env.PHOENIX_API_URL); }
+      catch (e) { console.error(`[phoenix-firewall] ${e instanceof Error ? e.message : e}`); process.exit(1); }
       const apiKey = process.env.PHOENIX_API_KEY;
       if (!apiKey) { console.error('[phoenix-firewall] PHOENIX_API_KEY not set'); process.exit(1); }
 

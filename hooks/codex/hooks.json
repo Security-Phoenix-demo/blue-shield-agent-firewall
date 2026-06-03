@@ -1,16 +1,16 @@
 {
   "$schema": "https://openai.com/codex/hooks/v1",
   "description": "Phoenix Security Blue Shield - Firewall — Codex CLI hook configuration",
-  "instructions": "Place in ~/.codex/hooks.json to enable firewall checks on install commands.",
+  "instructions": "Place in ~/.codex/hooks.json. IMPORTANT: the handler 'path' must be an ABSOLUTE path — Codex resolves it relative to ~/.codex, so a relative path silently fails to run (no enforcement). Either run `npx @phoenix-security/cli install-hooks codex` (writes an absolute path automatically) or replace ABSOLUTE_PATH_TO below with the absolute path to your checkout. Set PHOENIX_API_KEY; fail mode is CLOSED by default (see PHOENIX_FAIL_OPEN / PHOENIX_REQUIRE_KEY / PHOENIX_STRICT).",
   "hooks": {
     "PreToolUse": [
       {
         "event": "shell_command",
-        "match": "(npm install|npm add|pip install|yarn add|pnpm add|cargo add|gem install|uv pip install|poetry add)",
+        "match": "(^|[^a-zA-Z0-9_-])(npm|pnpm|yarn|bun|deno|pip|pip3|pipx|uv|poetry|cargo|gem)([^a-zA-Z0-9_-]|$)",
         "handler": {
           "type": "script",
-          "path": "../claude-code/pre-tool-use.sh",
-          "description": "Evaluates packages against Phoenix firewall before install. Reuses the same shell script as Claude Code — set PHOENIX_API_KEY and optionally PHOENIX_API_URL / PHOENIX_STRICT env vars."
+          "path": "ABSOLUTE_PATH_TO/firewall-agents/hooks/claude-code/pre-tool-use.sh",
+          "description": "Evaluates packages against the Phoenix firewall before install. Reuses the same script (and shared library) as Claude Code. The broad 'match' fires the hook for any package-manager command; the script's parser makes the precise allow/deny decision, so short forms like `npm i` / `pip3 install` are not bypasses."
         },
         "on_deny": {
           "exit_code": 2,
