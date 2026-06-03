@@ -1,11 +1,11 @@
 ---
 name: phoenix-security:vet-dependency
-description: Check a package against Phoenix Supply Chain Firewall before adding it as a dependency. Call this before any npm install, pip install, or similar command.
+description: Check a package against Phoenix Security Blue Shield - Firewall before adding it as a dependency. Call this before any npm install, pip install, or similar command.
 ---
 
 # Vet Dependency
 
-Before adding any package dependency, check it against the Phoenix Supply Chain Firewall.
+Before adding any package dependency, check it against the Phoenix Security Blue Shield - Firewall.
 
 ## Steps
 

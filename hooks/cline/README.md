@@ -1,4 +1,4 @@
-# Phoenix Supply Chain Firewall — Cline Integration
+# Phoenix Security Blue Shield - Firewall — Cline Integration
 
 Cline supports MCP natively. No custom hook script is needed.
 

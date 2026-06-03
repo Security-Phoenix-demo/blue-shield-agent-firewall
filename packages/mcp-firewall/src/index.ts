@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * @phoenix-security/mcp-firewall — MCP server for Phoenix Supply Chain Firewall
+ * @phoenix-security/mcp-firewall — MCP server for Phoenix Security Blue Shield - Firewall
  * Provides 7 phoenix_* tools for AI coding agents.
  *
  * Usage:

@@ -1,7 +1,7 @@
 {
   "name": "@phoenix-security/cli",
   "version": "0.1.0",
-  "description": "Phoenix Supply Chain Firewall CLI",
+  "description": "Phoenix Security Blue Shield - Firewall CLI",
   "main": "dist/index.js",
   "bin": { "phoenix-firewall": "./dist/index.js" },
   "license": "Apache-2.0",

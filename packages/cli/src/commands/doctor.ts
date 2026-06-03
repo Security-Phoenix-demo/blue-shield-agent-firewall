@@ -4,7 +4,7 @@ import { join } from 'path';
 
 export function doctorCommand(): Command {
   return new Command('doctor')
-    .description('Check Phoenix Firewall configuration and connectivity')
+    .description('Check Phoenix Security Blue Shield - Firewall configuration and connectivity')
     .action(async () => {
       const apiUrl = process.env.PHOENIX_API_URL || 'https://api.phxintel.security';
       const apiKey = process.env.PHOENIX_API_KEY;

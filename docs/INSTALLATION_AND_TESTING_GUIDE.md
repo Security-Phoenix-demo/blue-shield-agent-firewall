@@ -1,4 +1,4 @@
-# Phoenix Supply Chain Firewall -- Installation and Testing Guide
+# Phoenix Security Blue Shield - Firewall -- Installation and Testing Guide
 
 > Protect every AI coding agent from malicious, vulnerable, and non-compliant packages.
 > This guide walks you through setup, configuration, and validation from scratch.
@@ -590,7 +590,7 @@ cat > ~/.codex/hooks.json << 'EOF'
         },
         "on_deny": {
           "exit_code": 2,
-          "message": "Package blocked by Phoenix Supply Chain Firewall policy."
+          "message": "Package blocked by Phoenix Security Blue Shield - Firewall policy."
         }
       }
     ]
@@ -612,7 +612,7 @@ Expected output:
 
 ```
 [phoenix-firewall] BLOCKED: Package event-stream@3.3.6: blocked by rule malware-detection
-Package blocked by Phoenix Supply Chain Firewall policy.
+Package blocked by Phoenix Security Blue Shield - Firewall policy.
 ```
 
 ### 4.3 Windsurf Hooks
@@ -665,7 +665,7 @@ Cursor does not support shell-based hooks. Instead, it uses instruction-based ru
 Create or edit `.cursorrules` in your project root and add:
 
 ```
-## Supply Chain Security (Phoenix Firewall)
+## Supply Chain Security (Phoenix Security Blue Shield - Firewall)
 
 Before adding any dependency via `npm install`, `pip install`, `yarn add`,
 `pnpm add`, `cargo add`, `gem install`, `uv pip install`, or `poetry add`:
@@ -724,7 +724,7 @@ chmod +x ~/.aider/hooks/pre-install-wrapper.sh
 Create or edit `.aider.conf.yml` in your project root:
 
 ```yaml
-# Phoenix Supply Chain Firewall wrapper
+# Phoenix Security Blue Shield - Firewall wrapper
 # Wraps package manager calls through the firewall check
 pre-install-command: ~/.aider/hooks/pre-install-wrapper.sh
 ```
@@ -953,7 +953,7 @@ Place `.phoenix-firewall.yaml` in your project root. It is read by the MCP serve
 ### Full Annotated Reference
 
 ```yaml
-# .phoenix-firewall.yaml -- Phoenix Supply Chain Firewall project config
+# .phoenix-firewall.yaml -- Phoenix Security Blue Shield - Firewall project config
 # Documentation: https://docs.phoenix.security/scf/config
 # Schema version: 1.0
 
@@ -1448,7 +1448,7 @@ agents:
 
 ### CI/CD Integration
 
-The Phoenix Supply Chain Firewall integrates with all major CI/CD platforms. For GitHub Actions, GitLab CI, Jenkins, Azure DevOps, and Bitbucket Pipelines templates, see:
+The Phoenix Security Blue Shield - Firewall integrates with all major CI/CD platforms. For GitHub Actions, GitLab CI, Jenkins, Azure DevOps, and Bitbucket Pipelines templates, see:
 
 [phoenix-firewall/integrations/](https://github.com/Security-Phoenix-demo/phoenix-firewall/tree/main/integrations)
 
@@ -1483,7 +1483,7 @@ jobs:
 ## Further Resources
 
 - [Phoenix Security Documentation](https://docs.phoenix.security)
-- [Phoenix Firewall GitHub Repository](https://github.com/Security-Phoenix-demo/phoenix-firewall)
+- [Phoenix Security Blue Shield - Firewall GitHub Repository](https://github.com/Security-Phoenix-demo/phoenix-firewall)
 - [API Reference](https://api.phxintel.security/docs)
 - [Get an API Key](https://phxintel.security)
 - [CI/CD Integration Templates](https://github.com/Security-Phoenix-demo/phoenix-firewall/tree/main/integrations)

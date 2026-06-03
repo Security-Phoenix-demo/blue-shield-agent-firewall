@@ -1,0 +1,10 @@
+{
+  "_comment": "Add to antigravity.config.json (workspace or user level). Hook runs before every tool invocation; non-zero exit blocks.",
+  "hooks": {
+    "preToolUse": {
+      "command": "${env:HOME}/.config/antigravity/hooks/pre-tool-use",
+      "timeoutMs": 10000,
+      "failureMode": "block"
+    }
+  }
+}

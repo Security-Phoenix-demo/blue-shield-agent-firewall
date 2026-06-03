@@ -1,4 +1,4 @@
-# Security Policy — Phoenix Supply Chain Firewall
+# Security Policy — Phoenix Security Blue Shield - Firewall
 
 ## Reporting Vulnerabilities
 

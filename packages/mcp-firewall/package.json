@@ -1,7 +1,7 @@
 {
   "name": "@phoenix-security/mcp-firewall",
   "version": "0.1.0",
-  "description": "Phoenix Supply Chain Firewall MCP server for AI coding agents",
+  "description": "Phoenix Security Blue Shield - Firewall MCP server for AI coding agents",
   "main": "dist/index.js",
   "bin": { "phoenix-mcp-firewall": "./dist/index.js" },
   "license": "Apache-2.0",

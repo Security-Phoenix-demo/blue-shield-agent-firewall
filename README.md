@@ -1,12 +1,12 @@
-# Phoenix Supply Chain Firewall — Agent Hub
+# Phoenix Security Blue Shield - Firewall — Agent Hub
 
 > Protect AI coding agents from malicious and vulnerable packages. One command secures Claude Code, Cursor, Codex, Windsurf, Cline, Aider, GitHub Copilot, and Gemini Antigravity.
 
 <p align="center">
-  <img src="assets/phoenix-firewall-banner.jpeg" alt="Phoenix Supply Chain Agent Firewall banner" width="600">
+  <img src="assets/phoenix-firewall-banner.jpeg" alt="Phoenix Security Blue Shield - Firewall (Agent Hub) banner" width="600">
 </p>
 
-<h1 align="center">Phoenix Supply Chain Agent Firewall</h1>
+<h1 align="center">Phoenix Security Blue Shield - Firewall (Agent Hub)</h1>
 
 <p align="center">
   <strong>Detection without enforcement is noise.</strong><br>
@@ -29,7 +29,7 @@
 
 ## Overview
 
-This repository is the **agent integration layer** of the Phoenix Supply Chain Firewall. It contains the NPM packages, shell hooks, and Claude skills that connect AI coding agents to Phoenix's intelligence backend.
+This repository is the **agent integration layer** of the Phoenix Security Blue Shield - Firewall. It contains the NPM packages, shell hooks, and Claude skills that connect AI coding agents to Phoenix's intelligence backend.
 
 The companion binary repository ([Security-Phoenix-demo/phoenix-firewall](https://github.com/Security-Phoenix-demo/phoenix-firewall)) contains the Go proxy and endpoint agent. The two repositories work together but are independently usable:
 
@@ -205,7 +205,7 @@ Summary: 1 blocked, 1 warning, 1245 clean
 
 ### `@phoenix-security/schema`
 
-Shared TypeScript types and JSON schemas for Phoenix Firewall API payloads. Use this in your own integrations to stay in sync with the API contract.
+Shared TypeScript types and JSON schemas for Phoenix Security Blue Shield - Firewall API payloads. Use this in your own integrations to stay in sync with the API contract.
 
 ```bash
 npm install @phoenix-security/schema

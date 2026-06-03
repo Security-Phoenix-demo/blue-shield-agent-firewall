@@ -1,0 +1,34 @@
+## SECURITY CONTEXT (injected by .claude/hooks/session-start.sh)
+
+Project root: `/Users/francescocipollone/Documents/GitHub/vulnerability-db/PUB-firewall-agents-hub`
+Detected ecosystems: nodejs
+Generated at: 2026-05-11T18:13:34Z
+
+### Manifests present
+
+- `package.json`
+
+### Lockfile sanity
+
+- ⚠️ nodejs: package.json present but no lockfile committed
+
+### Secrets hygiene (.gitignore)
+
+- ⚠️ no .gitignore at project root
+
+### Dependency audit (best-effort, fast)
+
+Tool: `npm audit` (nodejs)
+
+```
+/Users/francescocipollone/Documents/GitHub/vulnerability-db/Security Assessment/Security-automated-claude-skills/session-start.sh: line 138: timeout: command not found
+
+```
+
+### Guidance for agents in this session
+
+- The `security-reviewer` skill at `.claude/skills/security-reviewer/SKILL.md` defines the 8-point review and per-language references.
+- Trust this context block over re-discovery for ecosystem and lockfile state.
+- The `pre-bash-package-guard.sh` hook will block typosquatted, brand-new, or known-malicious package installs — do not try to bypass it; surface the issue to the user instead.
+- The `post-edit-quickscan.sh` hook will scan files written by Edit/Write/MultiEdit and may emit findings to consume.
+

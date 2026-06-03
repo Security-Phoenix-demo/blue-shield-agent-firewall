@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 # -----------------------------------------------------------------------
-# Phoenix Supply Chain Firewall — Aider Pre-Install Wrapper
+# Phoenix Security Blue Shield - Firewall — Aider Pre-Install Wrapper
 #
 # Wraps pip/npm/yarn/pnpm so that every install is checked against the
 # Phoenix firewall API before the real package manager runs.

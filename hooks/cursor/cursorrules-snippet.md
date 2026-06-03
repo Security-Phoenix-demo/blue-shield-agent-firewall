@@ -1,4 +1,4 @@
-# Phoenix Supply Chain Firewall — Cursor Rules Fragment
+# Phoenix Security Blue Shield - Firewall — Cursor Rules Fragment
 
 Add the following to your project's `.cursorrules` file to instruct Cursor
 to check packages against the Phoenix firewall before installing them.
@@ -6,7 +6,7 @@ to check packages against the Phoenix firewall before installing them.
 ---
 
 ```
-## Supply Chain Security (Phoenix Firewall)
+## Supply Chain Security (Phoenix Security Blue Shield - Firewall)
 
 Before adding any dependency via `npm install`, `pip install`, `yarn add`,
 `pnpm add`, `cargo add`, `gem install`, `uv pip install`, or `poetry add`:

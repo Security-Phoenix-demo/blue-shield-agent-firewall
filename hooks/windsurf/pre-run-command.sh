@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 # -----------------------------------------------------------------------
-# Phoenix Supply Chain Firewall — Windsurf pre_run_command Hook
+# Phoenix Security Blue Shield - Firewall — Windsurf pre_run_command Hook
 #
 # Intercepts package-install commands and evaluates them against the
 # Phoenix firewall API before execution.

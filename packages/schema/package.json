@@ -1,7 +1,7 @@
 {
   "name": "@phoenix-security/schema",
   "version": "0.1.0",
-  "description": "Shared verdict schema and TypeScript types for Phoenix Supply Chain Firewall",
+  "description": "Shared verdict schema and TypeScript types for Phoenix Security Blue Shield - Firewall",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "license": "Apache-2.0",

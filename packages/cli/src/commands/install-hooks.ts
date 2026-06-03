@@ -4,7 +4,7 @@ import { join, dirname } from 'path';
 
 const HOOK_SCRIPT = `#!/usr/bin/env bash
 set -euo pipefail
-# Phoenix Supply Chain Firewall — PreToolUse hook
+# Phoenix Security Blue Shield - Firewall — PreToolUse hook
 # Auto-installed by @phoenix-security/cli
 
 PHOENIX_API_URL="\${PHOENIX_API_URL:-https://api.phxintel.security}"

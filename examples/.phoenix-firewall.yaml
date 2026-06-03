@@ -1,4 +1,4 @@
-# .phoenix-firewall.yaml — Phoenix Supply Chain Firewall project config
+# .phoenix-firewall.yaml — Phoenix Security Blue Shield - Firewall project config
 # Place in your project root. Read by MCP server, CLI, and Go proxy.
 #
 # Documentation: https://docs.phoenix.security/scf/config

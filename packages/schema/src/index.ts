@@ -1,5 +1,5 @@
 /**
- * @phoenix-security/schema — Shared types for Phoenix Supply Chain Firewall
+ * @phoenix-security/schema — Shared types for Phoenix Security Blue Shield - Firewall
  * Used by @phoenix-security/mcp-firewall, @phoenix-security/cli, and backend.
  */
 

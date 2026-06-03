@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 # -----------------------------------------------------------------------
-# Phoenix Supply Chain Firewall — Claude Code PreToolUse Hook
+# Phoenix Security Blue Shield - Firewall — Claude Code PreToolUse Hook
 #
 # Intercepts package-install commands (npm, pip, yarn, pnpm, cargo, gem,
 # uv, poetry) and evaluates them against the Phoenix firewall API before

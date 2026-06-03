@@ -34,7 +34,7 @@ const MCP_CONFIG = {
 
 export function initCommand(): Command {
   return new Command('init')
-    .description('Initialize Phoenix Firewall in your project')
+    .description('Initialize Phoenix Security Blue Shield - Firewall in your project')
     .action(() => {
       const cwd = process.cwd();
       console.log('[phoenix-firewall] Initializing...\n');
@@ -42,7 +42,7 @@ export function initCommand(): Command {
       // 1. Write .phoenix-firewall.yaml
       const yamlPath = join(cwd, '.phoenix-firewall.yaml');
       if (!existsSync(yamlPath)) {
-        writeFileSync(yamlPath, '# Phoenix Supply Chain Firewall config\n# Docs: https://github.com/Security-Phoenix-demo/firewall-agents\n\n' + stringify(DEFAULT_CONFIG));
+        writeFileSync(yamlPath, '# Phoenix Security Blue Shield - Firewall config\n# Docs: https://github.com/Security-Phoenix-demo/firewall-agents\n\n' + stringify(DEFAULT_CONFIG));
         console.log('  Created .phoenix-firewall.yaml');
       } else {
         console.log('  .phoenix-firewall.yaml already exists — skipped');

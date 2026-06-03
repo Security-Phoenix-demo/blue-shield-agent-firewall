@@ -1,0 +1,17 @@
+{
+  "_comment": "Add to .vscode/tasks.json — runs phoenix-firewall evaluation before any Copilot-suggested install command. See README.md.",
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "phoenix-firewall-precheck",
+      "type": "shell",
+      "command": "${env:HOME}/.config/phoenix-firewall/agents-hub/github-copilot/pre-tool-use-wrapper.sh",
+      "args": ["${input:installCommand}"],
+      "presentation": { "reveal": "silent", "panel": "shared" },
+      "problemMatcher": []
+    }
+  ],
+  "inputs": [
+    { "id": "installCommand", "type": "promptString", "description": "Install command to evaluate" }
+  ]
+}

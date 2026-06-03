@@ -1,6 +1,6 @@
 {
   "$schema": "https://openai.com/codex/hooks/v1",
-  "description": "Phoenix Supply Chain Firewall — Codex CLI hook configuration",
+  "description": "Phoenix Security Blue Shield - Firewall — Codex CLI hook configuration",
   "instructions": "Place in ~/.codex/hooks.json to enable firewall checks on install commands.",
   "hooks": {
     "PreToolUse": [
@@ -14,7 +14,7 @@
         },
         "on_deny": {
           "exit_code": 2,
-          "message": "Package blocked by Phoenix Supply Chain Firewall policy."
+          "message": "Package blocked by Phoenix Security Blue Shield - Firewall policy."
         }
       }
     ]
