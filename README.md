@@ -121,7 +121,7 @@ npx @phoenix-security/mcp-firewall@0.1.0
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
 | `PHOENIX_API_KEY` | Yes | — | Your Phoenix API key |
-| `PHOENIX_API_URL` | No | `https://api.phxintel.security` | Override for self-hosted or dev |
+| `PHOENIX_API_URL` | No | `https://phxintel.security` | Override for self-hosted or dev |
 
 **Transport modes:**
 - `stdio` (default) — for local agent integration via `.mcp.json` / `mcp.json`
@@ -269,7 +269,7 @@ Hook settings snippet (`~/.claude/settings.json`):
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
 | `PHOENIX_API_KEY` | Yes | — | API key |
-| `PHOENIX_API_URL` | No | `https://api.phxintel.security` | Override URL |
+| `PHOENIX_API_URL` | No | `https://phxintel.security` | Override URL |
 | `PHOENIX_STRICT` | No | `false` | `true` = block when API is unreachable (fail-closed) |
 
 ---
@@ -511,7 +511,7 @@ This repo and [Security-Phoenix-demo/phoenix-firewall](https://github.com/Securi
                                 │                    │
                ┌────────────────▼──┐    ┌────────────▼───────────────┐
                │  Local v4 agent   │    │  Phoenix Backend            │
-               │  worker (IPC)     │    │  api.phxintel.security      │
+               │  worker (IPC)     │    │  phxintel.security      │
                │  (Go binary repo) │    │  POST /api/v1/firewall/     │
                └───────────────────┘    │  evaluate                  │
                                         └────────────────────────────┘
@@ -602,7 +602,7 @@ Quick GitHub Actions example using only this repo (no binary required):
 
 | Domain | Purpose |
 |--------|---------|
-| `api.phxintel.security` | REST API (primary) |
+| `phxintel.security` | REST API (primary) |
 | `mcp.phxintel.security` | Hosted MCP server (Streamable HTTP) |
 | `dev.phxintel.security` | Dev/staging |
 

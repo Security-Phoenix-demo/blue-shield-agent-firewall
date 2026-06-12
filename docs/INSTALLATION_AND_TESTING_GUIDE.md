@@ -357,7 +357,7 @@ In VS Code with the Cline extension, open the command palette (Cmd+Shift+P / Ctr
       "args": ["-y", "@phoenix-security/mcp-firewall"],
       "env": {
         "PHOENIX_API_KEY": "${PHOENIX_API_KEY}",
-        "PHOENIX_API_URL": "https://api.phxintel.security"
+        "PHOENIX_API_URL": "https://phxintel.security"
       }
     }
   }
@@ -672,7 +672,7 @@ Before adding any dependency via `npm install`, `pip install`, `yarn add`,
 
 1. Call the Phoenix Security firewall API to check the package:
 
-   POST ${PHOENIX_API_URL:-https://api.phxintel.security}/api/v1/firewall/evaluate
+   POST ${PHOENIX_API_URL:-https://phxintel.security}/api/v1/firewall/evaluate
    Headers: x-api-key: <from PHOENIX_API_KEY env var>
    Body: {"packages": [{"ecosystem": "<npm|pypi|crates.io|rubygems>", "name": "<pkg>", "version": "<ver>"}]}
 
@@ -917,7 +917,7 @@ Expected output (everything passing):
 
   [OK] Node.js version: v20.11.0 (>= 18 required)
   [OK] PHOENIX_API_KEY is set
-  [OK] API reachable: https://api.phxintel.security (200 OK, 142ms)
+  [OK] API reachable: https://phxintel.security (200 OK, 142ms)
   [OK] .phoenix-firewall.yaml found
   [OK] MCP config: .mcp.json (Claude Code)
   [OK] Hook installed: ~/.claude/hooks/phoenix-firewall/pre-tool-use.sh
@@ -1251,17 +1251,17 @@ echo $PHOENIX_API_KEY
 
 ### "Cannot reach API" / Connection timeout
 
-The CLI or hook cannot connect to `api.phxintel.security`.
+The CLI or hook cannot connect to `phxintel.security`.
 
 **Possible causes and fixes:**
 
-1. **Network issue:** Verify you have internet access: `curl -s https://api.phxintel.security/health`
+1. **Network issue:** Verify you have internet access: `curl -s https://phxintel.security/health`
 2. **Corporate proxy:** Set your proxy environment variables:
    ```bash
    export HTTPS_PROXY="http://proxy.yourcompany.com:8080"
    ```
-3. **Corporate firewall:** Ask your network team to allow outbound HTTPS to `api.phxintel.security` (port 443)
-4. **DNS resolution:** Try `nslookup api.phxintel.security`
+3. **Corporate firewall:** Ask your network team to allow outbound HTTPS to `phxintel.security` (port 443)
+4. **DNS resolution:** Try `nslookup phxintel.security`
 
 ### "MCP tools not appearing"
 
@@ -1412,7 +1412,7 @@ For organization-wide deployment, create a managed MCP config that applies to al
       "args": ["-y", "@phoenix-security/mcp-firewall"],
       "env": {
         "PHOENIX_API_KEY": "${PHOENIX_API_KEY}",
-        "PHOENIX_API_URL": "https://api.phxintel.security"
+        "PHOENIX_API_URL": "https://phxintel.security"
       }
     }
   }
@@ -1484,7 +1484,7 @@ jobs:
 
 - [Phoenix Security Documentation](https://docs.phoenix.security)
 - [Phoenix Security Blue Shield - Firewall GitHub Repository](https://github.com/Security-Phoenix-demo/phoenix-firewall)
-- [API Reference](https://api.phxintel.security/docs)
+- [API Reference](https://phxintel.security/docs)
 - [Get an API Key](https://phxintel.security)
 - [CI/CD Integration Templates](https://github.com/Security-Phoenix-demo/phoenix-firewall/tree/main/integrations)
 - [Report a Security Issue](https://github.com/Security-Phoenix-demo/phoenix-firewall/blob/main/SECURITY.md)

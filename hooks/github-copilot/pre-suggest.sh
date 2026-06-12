@@ -11,9 +11,15 @@
 #   2 — deny  (suggestion withheld with a policy explanation)
 
 _phoenix_evaluate_suggestion() {
-    # Reuse the shared evaluation logic from the claude-code hook.
+    # Reuse the shared evaluation logic from the claude-code hook. This file is
+    # sourced from both ~/.bashrc and ~/.zshrc; BASH_SOURCE is empty under zsh,
+    # so fall back to the zsh-native current-file expansion (%x). The bash
+    # default is never evaluated when BASH_SOURCE[0] is set, so this stays
+    # syntactically safe for both shells.
+    local script_dir
+    script_dir="$(dirname "${BASH_SOURCE[0]:-${(%):-%x}}")"
     TOOL_INPUT="$1" \
-        "$(dirname "${BASH_SOURCE[0]}")/../claude-code/pre-tool-use.sh"
+        "$script_dir/../claude-code/pre-tool-use.sh"
 }
 
 # Wrap gh narrowly: only intercept the copilot subcommand; pass everything else
