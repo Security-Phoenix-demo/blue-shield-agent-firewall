@@ -23,7 +23,7 @@ if (-not $env:PHOENIX_API_KEY) {
     Write-Warning "[phoenix-firewall] PHOENIX_API_KEY not set — skipping check"
     exit 0
 }
-$apiUrl = if ($env:PHOENIX_API_URL) { $env:PHOENIX_API_URL } else { 'https://api.phxintel.security' }
+$apiUrl = if ($env:PHOENIX_API_URL) { $env:PHOENIX_API_URL } else { 'https://phxintel.security' }
 $body = @{ command = $Command } | ConvertTo-Json
 try {
     $response = Invoke-RestMethod -Method Post -Uri "$apiUrl/api/v1/firewall/evaluate" `

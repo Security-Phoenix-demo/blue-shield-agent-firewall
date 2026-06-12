@@ -13,7 +13,7 @@ Before adding any dependency via `npm install`, `pip install`, `yarn add`,
 
 1. Call the Phoenix Security firewall API to check the package:
 
-   POST ${PHOENIX_API_URL:-https://api.phxintel.security}/api/v1/firewall/evaluate
+   POST ${PHOENIX_API_URL:-https://phxintel.security}/api/v1/firewall/evaluate
    Headers: x-api-key: <from PHOENIX_API_KEY env var>
    Body: {"packages": [{"ecosystem": "<npm|pypi|crates.io|rubygems>", "name": "<pkg>", "version": "<ver>"}]}
 

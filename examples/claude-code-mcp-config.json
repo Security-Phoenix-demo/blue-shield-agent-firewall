@@ -5,7 +5,7 @@
       "args": ["-y", "@phoenix-security/mcp-firewall@^0.1.0"],
       "env": {
         "PHOENIX_API_KEY": "${PHOENIX_API_KEY}",
-        "PHOENIX_API_URL": "https://api.phxintel.security"
+        "PHOENIX_API_URL": "https://phxintel.security"
       }
     }
   }
