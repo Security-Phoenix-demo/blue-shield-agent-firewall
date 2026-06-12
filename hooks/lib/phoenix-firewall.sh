@@ -69,8 +69,11 @@ _phoenix_fw_norm() {
 }
 
 # Parse a normalised command. Sets globals:
-#   FW_ECOSYSTEM   npm|pypi|crates.io|rubygems  ("" if not an install)
-#   FW_PACKAGES    space-separated raw package tokens ("" if none)
+#   FW_ECOSYSTEM   first ecosystem seen ("" if not an install) — install sentinel
+#   FW_PACKAGES    space-separated "<ecosystem>:<raw-token>" entries ("" if none)
+# Each token carries its own ecosystem prefix so a compound command that mixes
+# managers (e.g. `npm install foo && pip install bar`) evaluates every package
+# under the correct ecosystem instead of collapsing onto the last one.
 # Detection requires the install verb to immediately follow a known package
 # manager (modulo flags), which prevents false positives like `npm run i`.
 _phoenix_fw_parse() {
@@ -78,8 +81,13 @@ _phoenix_fw_parse() {
     local cmd; cmd="$(_phoenix_fw_norm "$1")"
     [ -z "$cmd" ] && return 0
 
+    # CRITICAL: no glob expansion of untrusted tokens. Save the caller's noglob
+    # state and only clear it on exit if we were the one who set it.
+    local had_noglob=0
+    case "$-" in *f*) had_noglob=1 ;; esac
+    set -f
+
     local state=0 mgr="" eco=""
-    set -f                       # CRITICAL: no glob expansion of untrusted tokens
     # shellcheck disable=SC2086
     set -- $cmd
     local tok
@@ -89,7 +97,7 @@ _phoenix_fw_parse() {
             case "$tok" in
                 '&&'|'||'|';'|'|'|'&') state=0; mgr=""; eco="" ;;   # next command
                 -*) : ;;                                            # skip flags
-                *)  FW_PACKAGES="${FW_PACKAGES:+$FW_PACKAGES }$tok" ;;
+                *)  FW_PACKAGES="${FW_PACKAGES:+$FW_PACKAGES }$eco:$tok" ;;
             esac
             continue
         fi
@@ -97,7 +105,7 @@ _phoenix_fw_parse() {
             case "$tok" in
                 -*) continue ;;                                     # global flag before verb
                 install|i|in|add|isntall)                           # verb (+ common typo)
-                    state=2; eco="$mgr_eco"; FW_ECOSYSTEM="$eco"; continue ;;
+                    state=2; eco="$mgr_eco"; FW_ECOSYSTEM="${FW_ECOSYSTEM:-$eco}"; continue ;;
                 *) state=0; mgr=""; eco="" ;;                       # not a verb → fall through
             esac
         fi
@@ -109,7 +117,7 @@ _phoenix_fw_parse() {
             gem) mgr="$tok"; mgr_eco="rubygems"; state=1 ;;
         esac
     done
-    set +f
+    [ "$had_noglob" = 1 ] || set +f
     return 0
 }
 
@@ -118,17 +126,21 @@ _phoenix_fw_split_pkg() {
     local raw="$1"; FW_NAME="$raw"; FW_VER="latest"
     case "$FW_ECOSYSTEM" in
         pypi)
-            # strip extras and PEP440 version specifiers: name[extra]==1,>=,<=,~=,!=,>,<
-            FW_NAME="${raw%%[*}"
-            case "$FW_NAME" in
-                *"=="*) FW_VER="${FW_NAME#*==}"; FW_NAME="${FW_NAME%%==*}" ;;
-                *">="*) FW_NAME="${FW_NAME%%>=*}" ;;
-                *"<="*) FW_NAME="${FW_NAME%%<=*}" ;;
-                *"~="*) FW_NAME="${FW_NAME%%~=*}" ;;
-                *"!="*) FW_NAME="${FW_NAME%%!=*}" ;;
-                *">"*)  FW_NAME="${FW_NAME%%>*}" ;;
-                *"<"*)  FW_NAME="${FW_NAME%%<*}" ;;
+            # Order matters for tokens like name[extra]==1.2.3: capture the pinned
+            # version (== only) FIRST, then strip PEP440 specifiers, then strip the
+            # extras. Stripping extras first would discard the version with them.
+            case "$raw" in *"=="*) FW_VER="${raw#*==}" ;; esac
+            local nm="$raw"
+            case "$raw" in
+                *"=="*) nm="${raw%%==*}" ;;
+                *">="*) nm="${raw%%>=*}" ;;
+                *"<="*) nm="${raw%%<=*}" ;;
+                *"~="*) nm="${raw%%~=*}" ;;
+                *"!="*) nm="${raw%%!=*}" ;;
+                *">"*)  nm="${raw%%>*}" ;;
+                *"<"*)  nm="${raw%%<*}" ;;
             esac
+            FW_NAME="${nm%%[*}"     # strip extras: name[extra] -> name
             ;;
         npm)
             case "$raw" in
@@ -155,11 +167,14 @@ _phoenix_fw_safe_token() {
 
 # Build the JSON payload from FW_PACKAGES. Prints payload on stdout.
 # Returns non-zero if a token cannot be encoded safely (→ caller fails closed).
+# Each entry in FW_PACKAGES is "<ecosystem>:<raw-token>" (see _phoenix_fw_parse).
+# Split on the FIRST colon so the ecosystem drives per-token name/version parsing.
 _phoenix_fw_build_payload() {
-    local pkg first=1 items=""
+    local pkg items=""
     if command -v jq >/dev/null 2>&1; then
         for pkg in $FW_PACKAGES; do
-            _phoenix_fw_split_pkg "$pkg"
+            FW_ECOSYSTEM="${pkg%%:*}"
+            _phoenix_fw_split_pkg "${pkg#*:}"
             local obj
             obj="$(jq -cn --arg e "$FW_ECOSYSTEM" --arg n "$FW_NAME" --arg v "$FW_VER" \
                 '{ecosystem:$e,name:$n,version:$v}')" || return 1
@@ -171,11 +186,11 @@ _phoenix_fw_build_payload() {
     # Fallback without jq: only emit tokens that pass the strict allowlist,
     # otherwise fail closed rather than build malformed/injectable JSON.
     for pkg in $FW_PACKAGES; do
-        _phoenix_fw_split_pkg "$pkg"
+        FW_ECOSYSTEM="${pkg%%:*}"
+        _phoenix_fw_split_pkg "${pkg#*:}"
         _phoenix_fw_safe_token "$FW_NAME" || return 1
         _phoenix_fw_safe_token "$FW_VER"  || return 1
         items="${items:+$items,}{\"ecosystem\":\"${FW_ECOSYSTEM}\",\"name\":\"${FW_NAME}\",\"version\":\"${FW_VER}\"}"
-        first=0
     done
     printf '{"packages":[%s]}' "$items"
     return 0

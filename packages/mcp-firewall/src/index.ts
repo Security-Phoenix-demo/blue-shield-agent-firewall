@@ -88,11 +88,11 @@ async function readBody(req: IncomingMessage): Promise<unknown> {
 }
 
 function parseHttpArgs(args: string[]): { port: number; host: string } {
-  const portIdx = args.indexOf('--http');
   // Accept "--http", "--http 3100", or "--http=3100".
   let port = 3100;
-  const inline = args[portIdx]?.split('=')[1];
-  const next = args[portIdx + 1];
+  const portIdx = args.findIndex((a) => a === '--http' || a.startsWith('--http='));
+  const inline = portIdx >= 0 ? args[portIdx].split('=')[1] : undefined;
+  const next = portIdx >= 0 ? args[portIdx + 1] : undefined;
   if (inline) port = parseInt(inline, 10);
   else if (next && /^\d+$/.test(next)) port = parseInt(next, 10);
   const hostIdx = args.indexOf('--host');
@@ -111,7 +111,20 @@ async function startHttp(port: number, host: string) {
       const sessionId = req.headers['mcp-session-id'] as string | undefined;
 
       if (req.method === 'POST') {
-        const body = await readBody(req);
+        let body: unknown;
+        try {
+          body = await readBody(req);
+        } catch {
+          // Malformed JSON is a client error, not a server fault — return a
+          // JSON-RPC Parse Error rather than letting it fall through to a 500.
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({
+            jsonrpc: '2.0',
+            error: { code: -32700, message: 'Parse error' },
+            id: null,
+          }));
+          return;
+        }
         let transport: StreamableHTTPServerTransport | undefined =
           sessionId ? transports[sessionId] : undefined;
 
@@ -174,7 +187,7 @@ async function startHttp(port: number, host: string) {
 
 async function main() {
   const args = process.argv.slice(2);
-  if (args.includes('--http')) {
+  if (args.some((a) => a === '--http' || a.startsWith('--http='))) {
     const { port, host } = parseHttpArgs(args);
     await startHttp(port, host);
     return; // keep process alive serving HTTP
