@@ -15,11 +15,44 @@ import { PhoenixApiClient } from './client/api.js';
 import { LRUCache } from './cache/lru.js';
 import { registerTools } from './tools/register.js';
 
-const API_URL = process.env.PHOENIX_API_URL || 'https://api.phxintel.security';
 const API_KEY = process.env.PHOENIX_API_KEY || '';
 
 if (!API_KEY) {
   console.error('[phoenix-firewall] PHOENIX_API_KEY not set. Set it in your environment.');
+  process.exit(1);
+}
+
+// Validate PHOENIX_API_URL before sending the key anywhere. It may come from
+// project-level MCP config; an attacker-controlled host must not receive the key.
+const DEFAULT_API_URL = 'https://api.phxintel.security';
+const ALLOWED_HOSTS = new Set([
+  'api.phxintel.security',
+  'api.phxintel.appsecphoenix.io',
+  'api.cvedetails.io',
+  ...(process.env.PHOENIX_API_ALLOWED_HOSTS || '').split(',').map((h) => h.trim().toLowerCase()).filter(Boolean),
+]);
+
+function resolveApiUrl(raw: string | undefined): string {
+  const value = raw && raw.trim() ? raw.trim() : DEFAULT_API_URL;
+  let parsed: URL;
+  try { parsed = new URL(value); } catch { throw new Error('PHOENIX_API_URL is not a valid URL'); }
+  const host = parsed.hostname.toLowerCase();
+  const local = host === 'localhost' || host === '127.0.0.1' || host === '::1';
+  if (parsed.protocol !== 'https:' && !(local && parsed.protocol === 'http:')) {
+    throw new Error(`PHOENIX_API_URL must use HTTPS (got ${parsed.protocol}//${host})`);
+  }
+  if (!local && !ALLOWED_HOSTS.has(host)) {
+    throw new Error(`PHOENIX_API_URL host '${host}' is not allowlisted (set PHOENIX_API_ALLOWED_HOSTS to permit it)`);
+  }
+  parsed.username = ''; parsed.password = '';
+  return parsed.toString().replace(/\/$/, '');
+}
+
+let API_URL: string;
+try {
+  API_URL = resolveApiUrl(process.env.PHOENIX_API_URL);
+} catch (e) {
+  console.error(`[phoenix-firewall] ${e instanceof Error ? e.message : e}`);
   process.exit(1);
 }
 

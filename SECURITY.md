@@ -29,9 +29,18 @@ npm audit signatures @phoenix-security/mcp-firewall
 
 ## Key Handling
 
-- `PHOENIX_API_KEY` is NEVER written to files, logged to stdout/stderr, or included in error messages
-- The key is only transmitted via `x-api-key` HTTP header over HTTPS
-- `.phoenix-firewall.yaml` config files MUST NOT contain API keys — the parser rejects key-shaped strings
+- `PHOENIX_API_KEY` is read from the environment and transmitted only via the `x-api-key` HTTP header over HTTPS.
+- Hooks pass the header to `curl` via a stdin config (`-K -`), so the key does not appear in the process argument list (`ps`).
+- `PHOENIX_API_URL` is validated against an allowlist of Phoenix hosts (HTTPS required; localhost permitted for development) before the key is sent, so a poisoned project config cannot redirect the key to an attacker host. Extend with `PHOENIX_API_ALLOWED_HOSTS`.
+- `.phoenix-firewall.yaml` is committed to source control and MUST NOT contain the key itself — store only the env var *name* in `api_key_env`.
+
+## Fail Mode
+
+This is a *blocking* control and **fails closed by default**: if it cannot obtain a verdict (no API key with `PHOENIX_REQUIRE_KEY`/`PHOENIX_STRICT`, API unreachable, non-2xx, or unencodable input), the install is blocked.
+
+- `PHOENIX_FAIL_OPEN=true` — allow installs when the API cannot verify them (records a loud warning). Use only deliberately.
+- `PHOENIX_REQUIRE_KEY=true` — block installs when no API key is configured (default: warn loudly and allow, since a missing key is a setup state).
+- `PHOENIX_STRICT=true` — legacy switch forcing both fail-closed and require-key.
 
 ## Supported Versions
 
