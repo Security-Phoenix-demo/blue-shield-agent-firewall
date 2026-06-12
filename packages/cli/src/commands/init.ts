@@ -33,7 +33,7 @@ const MCP_CONFIG = {
     'phoenix-firewall': {
       command: 'npx',
       args: ['-y', `@phoenix-security/mcp-firewall@${MCP_FIREWALL_VERSION}`],
-      env: { PHOENIX_API_KEY: '${PHOENIX_API_KEY}', PHOENIX_API_URL: 'https://api.phxintel.security' },
+      env: { PHOENIX_API_KEY: '${PHOENIX_API_KEY}', PHOENIX_API_URL: 'https://phxintel.security' },
     },
   },
 };

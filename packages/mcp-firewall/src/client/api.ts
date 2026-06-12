@@ -1,4 +1,4 @@
-/** Phoenix API client — calls api.phxintel.security endpoints */
+/** Phoenix API client — calls phxintel.security endpoints */
 export class PhoenixApiClient {
   constructor(private baseUrl: string, private apiKey: string) {}
 

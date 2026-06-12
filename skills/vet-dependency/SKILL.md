@@ -18,7 +18,7 @@ Before adding any package dependency, check it against the Phoenix Security Blue
    - If `action` is **allow**: Proceed with installation.
 4. If the MCP tool is unavailable, fall back to `curl`:
    ```bash
-   curl -s -X POST "${PHOENIX_API_URL:-https://api.phxintel.security}/api/v1/firewall/evaluate" \
+   curl -s -X POST "${PHOENIX_API_URL:-https://phxintel.security}/api/v1/firewall/evaluate" \
      -H "Content-Type: application/json" \
      -H "x-api-key: ${PHOENIX_API_KEY}" \
      -d '{"packages":[{"ecosystem":"npm","name":"<pkg>","version":"<ver>"}]}'

@@ -28,7 +28,7 @@ Visual Studio's Copilot extension fires a `CopilotChatPreExecute` ETW event. The
 | Var | Default | Purpose |
 |---|---|---|
 | `PHOENIX_API_KEY` | (required if no v4 endpoint) | API key for the firewall endpoint |
-| `PHOENIX_API_URL` | `https://api.phxintel.security` | Backend base URL |
+| `PHOENIX_API_URL` | `https://phxintel.security` | Backend base URL |
 | `PHOENIX_STRICT` | `false` | Fail-closed when API unreachable |
 | `PHOENIX_BRIDGE_AUTO` | `true` | If `/etc/phoenix-firewall/agent-bridge.json` exists, call local v4 worker instead of backend (per PRD R-FUNC-092) |
 
