@@ -1,5 +1,6 @@
 import { existsSync, readdirSync, readFileSync } from 'fs';
 import { join } from 'path';
+import { collectEndpointIdentity, endpointMetadata, type EndpointIdentity } from './endpoint-identity.js';
 
 interface InventoryOptions {
   deviceId: string;
@@ -7,6 +8,7 @@ interface InventoryOptions {
   projectDir?: string;
   teamIdHint?: string;
   projectIdHint?: string;
+  endpointIdentity?: EndpointIdentity;
   now?: string;
 }
 
@@ -15,6 +17,7 @@ interface InventoryMetadata {
   project_id_hint?: string;
   path?: string;
   configured?: boolean;
+  [key: string]: string | string[] | boolean | undefined;
 }
 
 interface SkillInventoryItem {
@@ -125,7 +128,10 @@ export function buildAgentHubInventoryPayload(options: InventoryOptions): AgentH
 }
 
 function hintMetadata(options: InventoryOptions): InventoryMetadata | undefined {
-  const metadata: InventoryMetadata = {};
+  const identity = options.endpointIdentity || collectEndpointIdentity();
+  const metadata: InventoryMetadata = {
+    ...endpointMetadata(identity, 'hook'),
+  };
   if (options.teamIdHint) metadata.team_id_hint = options.teamIdHint;
   if (options.projectIdHint) metadata.project_id_hint = options.projectIdHint;
   return Object.keys(metadata).length > 0 ? metadata : undefined;

@@ -1,5 +1,6 @@
 import { Command } from 'commander';
 import { buildAgentHubInventoryPayload } from '../inventory.js';
+import { collectEndpointIdentity } from '../endpoint-identity.js';
 import { resolveApiUrl } from '../util/api-url.js';
 
 export function inventoryCommand(): Command {
@@ -10,16 +11,14 @@ export function inventoryCommand(): Command {
     .option('--project-id <id>', 'Optional project/repository hint stored as collector metadata only')
     .option('--dry-run', 'Print payload instead of uploading')
     .action(async (opts: { deviceId?: string; teamId?: string; projectId?: string; dryRun?: boolean }) => {
-      const deviceId = opts.deviceId || process.env.PHOENIX_DEVICE_ID || '';
-      if (!deviceId) {
-        console.error('[phoenix-firewall] --device-id or PHOENIX_DEVICE_ID is required');
-        process.exit(1);
-      }
+      const identity = collectEndpointIdentity();
+      const deviceId = opts.deviceId || process.env.PHOENIX_DEVICE_ID || identity.deviceId;
 
       const payload = buildAgentHubInventoryPayload({
         deviceId,
         teamIdHint: opts.teamId || process.env.PHOENIX_TEAM_ID,
         projectIdHint: opts.projectId || process.env.PHOENIX_PROJECT_ID,
+        endpointIdentity: identity,
       });
 
       if (opts.dryRun) {
