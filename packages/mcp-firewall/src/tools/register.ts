@@ -67,6 +67,11 @@ export function registerTools(server: Server, client: PhoenixApiClient, cache: L
           const parsed = parsePurl(purl);
           if (!parsed) return { content: [{ type: 'text', text: 'Invalid purl format. Use pkg:<ecosystem>/<name>@<version>' }], isError: true };
           const result = await client.evaluateEnriched([{ ecosystem: parsed.ecosystem, name: parsed.name, version: parsed.version || 'latest' }]);
+          await emitPackageActivity(client, parsed.ecosystem, parsed.name, parsed.version || 'latest', {
+            source: 'mcp',
+            tool: 'phoenix_check_package',
+            purl,
+          });
           cache.set(cacheKey, result);
           return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] };
         }
@@ -116,4 +121,30 @@ export function registerTools(server: Server, client: PhoenixApiClient, cache: L
       return { content: [{ type: 'text', text: `Error: ${err instanceof Error ? err.message : String(err)}` }], isError: true };
     }
   });
+}
+
+async function emitPackageActivity(
+  client: PhoenixApiClient,
+  ecosystem: string,
+  name: string,
+  version: string,
+  metadata: Record<string, unknown>,
+) {
+  const deviceId = process.env.PHOENIX_DEVICE_ID || '';
+  if (!deviceId) return;
+  const teamIdHint = process.env.PHOENIX_TEAM_ID || '';
+  try {
+    await client.sendActivity({
+      device_id: deviceId,
+      event_type: 'package_install',
+      collector_type: 'mcp',
+      occurred_at: new Date().toISOString(),
+      ecosystem,
+      package_name: name,
+      package_version: version,
+      metadata: teamIdHint ? { ...metadata, team_id_hint: teamIdHint } : metadata,
+    });
+  } catch (err) {
+    console.error(`[phoenix-firewall] activity emit failed: ${err instanceof Error ? err.message : String(err)}`);
+  }
 }

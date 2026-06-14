@@ -1,6 +1,6 @@
 import { Command } from 'commander';
 import { writeFileSync, existsSync, mkdirSync, copyFileSync } from 'fs';
-import { join } from 'path';
+import { dirname, join } from 'path';
 
 // Canonical evaluation library, copied into the package at build time
 // (see packages/cli build script: it copies hooks/lib/phoenix-firewall.sh here).
