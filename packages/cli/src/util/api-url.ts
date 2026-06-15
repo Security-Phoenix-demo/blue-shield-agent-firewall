@@ -10,7 +10,7 @@
  * Extend the allowlist via PHOENIX_API_ALLOWED_HOSTS (comma-separated).
  */
 const DEFAULT_ALLOWED_HOSTS = [
-  'api.phxintel.security',
+  'phxintel.security',
   'api.phxintel.appsecphoenix.io',
   'api.cvedetails.io',
 ];
@@ -27,7 +27,7 @@ function isLocalhost(host: string): boolean {
   return host === 'localhost' || host === '127.0.0.1' || host === '::1';
 }
 
-export const DEFAULT_API_URL = 'https://api.phxintel.security';
+export const DEFAULT_API_URL = 'https://phxintel.security';
 
 /** Returns a normalized URL string, or throws Error with a safe message. */
 export function resolveApiUrl(raw: string | undefined): string {

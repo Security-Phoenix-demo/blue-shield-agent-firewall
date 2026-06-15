@@ -7,7 +7,7 @@
  *   npx @phoenix-security/mcp-firewall              # stdio (default)
  *   npx @phoenix-security/mcp-firewall --http 3100   # Streamable HTTP
  *
- * Env: PHOENIX_API_KEY (required), PHOENIX_API_URL (default: https://api.phxintel.security)
+ * Env: PHOENIX_API_KEY (required), PHOENIX_API_URL (default: https://phxintel.security)
  */
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
@@ -24,9 +24,9 @@ if (!API_KEY) {
 
 // Validate PHOENIX_API_URL before sending the key anywhere. It may come from
 // project-level MCP config; an attacker-controlled host must not receive the key.
-const DEFAULT_API_URL = 'https://api.phxintel.security';
+const DEFAULT_API_URL = 'https://phxintel.security';
 const ALLOWED_HOSTS = new Set([
-  'api.phxintel.security',
+  'phxintel.security',
   'api.phxintel.appsecphoenix.io',
   'api.cvedetails.io',
   ...(process.env.PHOENIX_API_ALLOWED_HOSTS || '').split(',').map((h) => h.trim().toLowerCase()).filter(Boolean),
