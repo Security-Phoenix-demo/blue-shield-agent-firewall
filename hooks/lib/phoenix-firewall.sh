@@ -24,13 +24,13 @@
 #
 # Env:
 #   PHOENIX_API_KEY  (required for enforcement)
-#   PHOENIX_API_URL  (default https://api.phxintel.security)
+#   PHOENIX_API_URL  (default https://phxintel.security)
 # -----------------------------------------------------------------------------
 
 # Do not inherit a fragile shell state from the caller; be defensive instead.
 set -o pipefail 2>/dev/null || true
 
-PHOENIX_FW_DEFAULT_API_URL="https://api.phxintel.security"
+PHOENIX_FW_DEFAULT_API_URL="https://phxintel.security"
 PHOENIX_FW_TAG="[phoenix-firewall]"
 
 # --- fail-mode resolution -----------------------------------------------------

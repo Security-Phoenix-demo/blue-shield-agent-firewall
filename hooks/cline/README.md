@@ -14,7 +14,7 @@ Cline supports MCP natively. No custom hook script is needed.
       "args": ["-y", "@phoenix-security/mcp-firewall"],
       "env": {
         "PHOENIX_API_KEY": "${PHOENIX_API_KEY}",
-        "PHOENIX_API_URL": "https://api.phxintel.security"
+        "PHOENIX_API_URL": "https://phxintel.security"
       }
     }
   }
