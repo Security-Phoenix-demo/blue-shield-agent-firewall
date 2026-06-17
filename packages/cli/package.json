@@ -9,6 +9,7 @@
   "scripts": {
     "copy-lib": "mkdir -p templates && cp ../../hooks/lib/phoenix-firewall.sh templates/phoenix-firewall.sh",
     "build": "npm run copy-lib && tsc",
+    "test": "npm run build && node --test test/*.test.mjs",
     "prepublishOnly": "npm run build"
   },
   "dependencies": { "commander": "^12.0.0", "yaml": "^2.4.0" },

@@ -180,13 +180,8 @@ npx @phoenix-security/cli <command>
 
 ```bash
 phoenix-firewall install-hooks claude-code
-phoenix-firewall install-hooks cursor
 phoenix-firewall install-hooks codex
 phoenix-firewall install-hooks windsurf
-phoenix-firewall install-hooks cline
-phoenix-firewall install-hooks aider
-phoenix-firewall install-hooks github-copilot
-phoenix-firewall install-hooks gemini-antigravity
 ```
 
 **`scan` output example:**

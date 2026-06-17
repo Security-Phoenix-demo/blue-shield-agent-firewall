@@ -49,4 +49,11 @@ export class PhoenixApiClient {
       body: JSON.stringify(body),
     });
   }
+
+  async sendActivity(body: unknown) {
+    return this.request<unknown>('/api/v1/firewall/agent/activity', {
+      method: 'POST',
+      body: JSON.stringify(body),
+    });
+  }
 }

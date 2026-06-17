@@ -87,7 +87,7 @@ _phoenix_fw_parse() {
     case "$-" in *f*) had_noglob=1 ;; esac
     set -f
 
-    local state=0 mgr="" eco=""
+    local state=0 mgr="" eco="" mgr_eco=""
     # shellcheck disable=SC2086
     set -- $cmd
     local tok

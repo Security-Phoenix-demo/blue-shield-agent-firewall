@@ -68,6 +68,14 @@ try {
 
 const client = new PhoenixApiClient(API_URL, API_KEY);
 const cache = new LRUCache<string, unknown>(5000, 300_000);
+const MAX_HTTP_BODY_BYTES = 1_048_576;
+
+class PayloadTooLargeError extends Error {
+  constructor() {
+    super('Request body too large');
+    this.name = 'PayloadTooLargeError';
+  }
+}
 
 // Streamable HTTP requires one Server instance per session (a Server can only be
 // connected to a single transport at a time), so build servers via a factory. The
@@ -79,22 +87,54 @@ function buildServer(): Server {
 }
 
 async function readBody(req: IncomingMessage): Promise<unknown> {
+  const rawContentLength = req.headers['content-length'];
+  const contentLength = Array.isArray(rawContentLength) ? rawContentLength[0] : rawContentLength;
+  if (contentLength && /^\d+$/.test(contentLength) && Number(contentLength) > MAX_HTTP_BODY_BYTES) {
+    throw new PayloadTooLargeError();
+  }
+
   const chunks: Buffer[] = [];
-  for await (const chunk of req) chunks.push(chunk as Buffer);
+  let totalBytes = 0;
+  for await (const chunk of req) {
+    const buffer = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk);
+    totalBytes += buffer.length;
+    if (totalBytes > MAX_HTTP_BODY_BYTES) {
+      throw new PayloadTooLargeError();
+    }
+    chunks.push(buffer);
+  }
   if (chunks.length === 0) return undefined;
   const raw = Buffer.concat(chunks).toString('utf8').trim();
   if (!raw) return undefined;
   return JSON.parse(raw);
 }
 
+function normalizeSessionId(value: IncomingMessage['headers'][string]): string | undefined {
+  const sessionId = Array.isArray(value) ? value[0] : value;
+  return sessionId && sessionId.length > 0 ? sessionId : undefined;
+}
+
+function parsePort(value: string | undefined): number | undefined {
+  if (!value || !/^\d+$/.test(value)) return undefined;
+  const port = Number(value);
+  return Number.isInteger(port) && port >= 1 && port <= 65535 ? port : undefined;
+}
+
 function parseHttpArgs(args: string[]): { port: number; host: string } {
   // Accept "--http", "--http 3100", or "--http=3100".
   let port = 3100;
   const portIdx = args.findIndex((a) => a === '--http' || a.startsWith('--http='));
-  const inline = portIdx >= 0 ? args[portIdx].split('=')[1] : undefined;
-  const next = portIdx >= 0 ? args[portIdx + 1] : undefined;
-  if (inline) port = parseInt(inline, 10);
-  else if (next && /^\d+$/.test(next)) port = parseInt(next, 10);
+  if (portIdx >= 0) {
+    const flag = args[portIdx];
+    const rawPort = flag.startsWith('--http=') ? flag.slice('--http='.length) : args[portIdx + 1];
+    if (rawPort && !rawPort.startsWith('--')) {
+      const parsedPort = parsePort(rawPort);
+      if (parsedPort === undefined) {
+        throw new Error(`Invalid --http port '${rawPort}' (expected 1-65535)`);
+      }
+      port = parsedPort;
+    }
+  }
   const hostIdx = args.indexOf('--host');
   const host = (hostIdx >= 0 ? args[hostIdx + 1] : process.env.PHOENIX_MCP_HOST) || '127.0.0.1';
   return { port: Number.isFinite(port) ? port : 3100, host };
@@ -104,17 +144,29 @@ async function startHttp(port: number, host: string) {
   // Stateful Streamable HTTP: one transport+server per MCP session, keyed by the
   // Mcp-Session-Id header. Bind to loopback by default — this endpoint forwards the
   // Phoenix API key, so it must not be exposed on a public interface without intent.
-  const transports: Record<string, StreamableHTTPServerTransport> = {};
+  const transports = new Map<string, StreamableHTTPServerTransport>();
 
   const httpServer = createHttpServer(async (req: IncomingMessage, res: ServerResponse) => {
     try {
-      const sessionId = req.headers['mcp-session-id'] as string | undefined;
+      const sessionId = normalizeSessionId(req.headers['mcp-session-id']);
 
       if (req.method === 'POST') {
         let body: unknown;
         try {
           body = await readBody(req);
-        } catch {
+        } catch (err) {
+          if (err instanceof PayloadTooLargeError) {
+            res.writeHead(413, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({
+              jsonrpc: '2.0',
+              error: { code: -32000, message: 'Request body too large' },
+              id: null,
+            }));
+            return;
+          }
+          if (!(err instanceof SyntaxError)) {
+            throw err;
+          }
           // Malformed JSON is a client error, not a server fault — return a
           // JSON-RPC Parse Error rather than letting it fall through to a 500.
           res.writeHead(400, { 'Content-Type': 'application/json' });
@@ -126,17 +178,17 @@ async function startHttp(port: number, host: string) {
           return;
         }
         let transport: StreamableHTTPServerTransport | undefined =
-          sessionId ? transports[sessionId] : undefined;
+          sessionId ? transports.get(sessionId) : undefined;
 
         if (!transport && isInitializeRequest(body)) {
           transport = new StreamableHTTPServerTransport({
             sessionIdGenerator: () => randomUUID(),
             enableDnsRebindingProtection: true,
             allowedHosts: [`${host}:${port}`, `localhost:${port}`, `127.0.0.1:${port}`],
-            onsessioninitialized: (sid: string) => { transports[sid] = transport!; },
+            onsessioninitialized: (sid: string) => { transports.set(sid, transport!); },
           });
           transport.onclose = () => {
-            if (transport!.sessionId) delete transports[transport!.sessionId];
+            if (transport!.sessionId) transports.delete(transport!.sessionId);
           };
           await buildServer().connect(transport);
         }
@@ -157,7 +209,7 @@ async function startHttp(port: number, host: string) {
       // GET (server->client SSE stream) and DELETE (session termination) require an
       // existing session.
       if (req.method === 'GET' || req.method === 'DELETE') {
-        const transport = sessionId ? transports[sessionId] : undefined;
+        const transport = sessionId ? transports.get(sessionId) : undefined;
         if (!transport) {
           res.writeHead(400).end('Missing or unknown Mcp-Session-Id');
           return;
