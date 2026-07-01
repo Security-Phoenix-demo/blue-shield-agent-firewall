@@ -10,7 +10,14 @@
  * Extend the allowlist via PHOENIX_API_ALLOWED_HOSTS (comma-separated).
  */
 const DEFAULT_ALLOWED_HOSTS = [
+  // Phoenix Security API is served from the apex host under /api/v1 — the `api.`
+  // subdomain does not exist (NXDOMAIN). Apex hosts MUST be allowlisted, otherwise
+  // setting PHOENIX_API_URL=https://phxintel.security is rejected as "not allowlisted".
   'phxintel.security',
+  'phxintel.appsecphoenix.io',
+  'cvedetails.io',
+  // Reserved for a future dedicated API subdomain; harmless to keep allowlisted.
+  'api.phxintel.security',
   'api.phxintel.appsecphoenix.io',
   'api.cvedetails.io',
 ];

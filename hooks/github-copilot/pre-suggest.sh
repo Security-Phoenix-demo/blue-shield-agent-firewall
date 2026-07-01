@@ -11,9 +11,20 @@
 #   2 — deny  (suggestion withheld with a policy explanation)
 
 _phoenix_evaluate_suggestion() {
-    # Reuse the shared evaluation logic from the claude-code hook.
+    # Reuse the shared evaluation logic from the claude-code hook. This file is
+    # sourced from both ~/.bashrc and ~/.zshrc; BASH_SOURCE is empty under zsh.
+    # The zsh-native current-file expansion "${(%):-%x}" is invalid bash syntax
+    # (bad substitution) even when unused, since bash parses the whole default
+    # token at parse time — so it must be kept out of the bash code path
+    # entirely via an explicit ZSH_VERSION branch, not a parameter default.
+    local script_dir
+    if [ -n "$ZSH_VERSION" ]; then
+        script_dir="$(dirname "$(eval 'echo "${(%):-%x}"')")"
+    else
+        script_dir="$(dirname "${BASH_SOURCE[0]}")"
+    fi
     TOOL_INPUT="$1" \
-        "$(dirname "${BASH_SOURCE[0]}")/../claude-code/pre-tool-use.sh"
+        "$script_dir/../claude-code/pre-tool-use.sh"
 }
 
 # Wrap gh narrowly: only intercept the copilot subcommand; pass everything else
