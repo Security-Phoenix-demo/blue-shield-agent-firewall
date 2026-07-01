@@ -232,7 +232,13 @@ async function startHttp(port: number, host: string) {
     }
   });
 
-  await new Promise<void>((resolve) => httpServer.listen(port, host, resolve));
+  await new Promise<void>((resolve, reject) => {
+    httpServer.once('error', reject);
+    httpServer.listen(port, host, () => {
+      httpServer.off('error', reject);
+      resolve();
+    });
+  });
   console.error(`[phoenix-firewall] Streamable HTTP listening on http://${host}:${port}/`);
   console.error(`[phoenix-firewall] API target: ${API_URL}`);
 }

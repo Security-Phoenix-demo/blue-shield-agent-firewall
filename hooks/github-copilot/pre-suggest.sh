@@ -12,12 +12,17 @@
 
 _phoenix_evaluate_suggestion() {
     # Reuse the shared evaluation logic from the claude-code hook. This file is
-    # sourced from both ~/.bashrc and ~/.zshrc; BASH_SOURCE is empty under zsh,
-    # so fall back to the zsh-native current-file expansion (%x). The bash
-    # default is never evaluated when BASH_SOURCE[0] is set, so this stays
-    # syntactically safe for both shells.
+    # sourced from both ~/.bashrc and ~/.zshrc; BASH_SOURCE is empty under zsh.
+    # The zsh-native current-file expansion "${(%):-%x}" is invalid bash syntax
+    # (bad substitution) even when unused, since bash parses the whole default
+    # token at parse time — so it must be kept out of the bash code path
+    # entirely via an explicit ZSH_VERSION branch, not a parameter default.
     local script_dir
-    script_dir="$(dirname "${BASH_SOURCE[0]:-${(%):-%x}}")"
+    if [ -n "$ZSH_VERSION" ]; then
+        script_dir="$(dirname "$(eval 'echo "${(%):-%x}"')")"
+    else
+        script_dir="$(dirname "${BASH_SOURCE[0]}")"
+    fi
     TOOL_INPUT="$1" \
         "$script_dir/../claude-code/pre-tool-use.sh"
 }
